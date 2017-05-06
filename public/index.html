@@ -17,5 +17,11 @@
 		</form>
 		<div id="auto-complete-container"></div>
 	</div>	
+	<script>
+		const autoCompleteField = document.getElementById('auto-complete-field');
+		autoCompleteField.addEventListener('keypress', () => {
+			console.log('changed');
+		})
+	</script>
 </body>
 </html>
