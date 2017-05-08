@@ -33,28 +33,35 @@
 
 		autoCompleteField.addEventListener('keyup', (e) => {
 			let children = []
-			for (let i = autoCompleteContainer.children.length - 1; i >= 0; i--) {
-				let child = autoCompleteContainer.children[i];
-				if (child.innerHTML.indexOf(autoCompleteField.value) === -1) {
-					autoCompleteContainer.removeChild(child);
-					continue;
+			if (autoCompleteField.value === '') {
+				while (autoCompleteContainer.children.length > 0) {
+					autoCompleteContainer.removeChild(autoCompleteContainer.lastChild);
 				}
-				children.push(child.innerHTML);
-			}
+			} else {
 
-			fetch('http://localhost:4000/results', init).then((response) => {
-				return response.json().then((json) => {
-					let results = json.queries;
-					let frag = document.createDocumentFragment();
-					results.map(val => {
-						if (val.indexOf(autoCompleteField.value) !== -1 && children.indexOf(val) === -1) {
-							let textDiv = frag.appendChild(document.createElement('div'));
-							let textNode = textDiv.appendChild(document.createTextNode(val));
-						}
+				for (let i = autoCompleteContainer.children.length - 1; i >= 0; i--) {
+					let child = autoCompleteContainer.children[i];
+					if (child.innerHTML.indexOf(autoCompleteField.value) === -1) {
+						autoCompleteContainer.removeChild(child);
+						continue;
+					}
+					children.push(child.innerHTML);
+				}
+
+				fetch('http://localhost:4000/results', init).then((response) => {
+					return response.json().then((json) => {
+						let results = json.queries;
+						let frag = document.createDocumentFragment();
+						results.map(val => {
+							if (val.indexOf(autoCompleteField.value) !== -1 && children.indexOf(val) === -1) {
+								let textDiv = frag.appendChild(document.createElement('div'));
+								let textNode = textDiv.appendChild(document.createTextNode(val));
+							}
+						});
+						autoCompleteContainer.appendChild(frag);
 					});
-					autoCompleteContainer.appendChild(frag);
 				});
-			});
+			}
 		});
 	</script>
 </body>
