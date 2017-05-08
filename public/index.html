@@ -19,9 +19,43 @@
 	</div>	
 	<script>
 		const autoCompleteField = document.getElementById('auto-complete-field');
-		autoCompleteField.addEventListener('keypress', () => {
-			console.log('changed');
-		})
+		const autoCompleteContainer = document.getElementById('auto-complete-container');
+
+		var myHeaders = new Headers();
+		myHeaders.append('Content-Type', 'application/json');
+
+		var init = {
+			method: 'GET', 
+			headers: myHeaders,
+			mode: 'cors',
+			cache: 'default'
+		}
+
+		autoCompleteField.addEventListener('keyup', (e) => {
+			let children = []
+			for (let i = autoCompleteContainer.children.length - 1; i >= 0; i--) {
+				let child = autoCompleteContainer.children[i];
+				if (child.innerHTML.indexOf(autoCompleteField.value) === -1) {
+					autoCompleteContainer.removeChild(child);
+					continue;
+				}
+				children.push(child.innerHTML);
+			}
+
+			fetch('http://localhost:4000/results', init).then((response) => {
+				return response.json().then((json) => {
+					let results = json.queries;
+					let frag = document.createDocumentFragment();
+					results.map(val => {
+						if (val.indexOf(autoCompleteField.value) !== -1 && children.indexOf(val) === -1) {
+							let textDiv = frag.appendChild(document.createElement('div'));
+							let textNode = textDiv.appendChild(document.createTextNode(val));
+						}
+					});
+					autoCompleteContainer.appendChild(frag);
+				});
+			});
+		});
 	</script>
 </body>
 </html>
