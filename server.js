@@ -6,7 +6,7 @@ var views = require('koa-views');
 const PORT = process.env.PORT || 4000;
 
 var results = {
-	queries: ['carrot', 'cat', 'carpenter'],
+	queries: ['carrot', 'cat', 'carpenter', 'catskills'],
 };
 
 
